@@ -1,0 +1,7 @@
+{
+    "prettier.printWidth": 120,
+    "prettier.endOfLine": "lf",
+    "prettier.singleQuote": true,
+    "editor.formatOnSave": true,
+    "bashBeautify.tabSize": 2
+}

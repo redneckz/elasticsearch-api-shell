@@ -4,27 +4,27 @@ type: docker
 name: default
 
 steps:
-- name: test
-  image: alpine
-  environment:
-    ES_URL: http://database:9200
-  commands:
-  - apk add curl bash
-  - sleep 15
-  - ./api.test.sh
+  - name: test
+    image: alpine
+    environment:
+      ES_URL: http://database:9200
+    commands:
+      - apk add curl bash
+      - sleep 30
+      - ./api.test.sh
 
 services:
-- name: database
-  image: docker.elastic.co/elasticsearch/elasticsearch:7.3.2
-  environment:
-    discovery.type: single-node
-  ports:
-  - 9200
+  - name: database
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.2
+    environment:
+      discovery.type: single-node
+    ports:
+      - 9200
 
 trigger:
   event:
-  - push
-  - pull_request
+    - push
+    - pull_request
 
 ---
 kind: pipeline
@@ -32,32 +32,32 @@ type: docker
 name: publish
 
 steps:
-- name: test
-  image: alpine
-  environment:
-    ES_URL: http://database:9200
-  commands:
-  - apk add curl bash
-  - sleep 15
-  - ./api.test.sh
+  - name: test
+    image: alpine
+    environment:
+      ES_URL: http://database:9200
+    commands:
+      - apk add curl bash
+      - sleep 30
+      - ./api.test.sh
 
-- name: gh-pages
-  image: plugins/gh-pages
-  environment:
-    PLUGIN_USER_NAME: Alexander Alexandrov
-    PLUGIN_USER_EMAIL: aalexandrovv@gmail.com
-  settings:
-    username: redneckz
-    password:
-      from_secret: github_password
+  - name: gh-pages
+    image: plugins/gh-pages
+    environment:
+      PLUGIN_USER_NAME: Alexander Alexandrov
+      PLUGIN_USER_EMAIL: aalexandrovv@gmail.com
+    settings:
+      username: redneckz
+      password:
+        from_secret: github_password
 
 services:
-- name: database
-  image: docker.elastic.co/elasticsearch/elasticsearch:7.3.2
-  environment:
-    discovery.type: single-node
-  ports:
-  - 9200
+  - name: database
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.2
+    environment:
+      discovery.type: single-node
+    ports:
+      - 9200
 
 trigger:
   event:
