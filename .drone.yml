@@ -1,0 +1,44 @@
+---
+kind: pipeline
+type: docker
+name: default
+
+steps:
+- name: test
+  image: docker.elastic.co/elasticsearch/elasticsearch:7.3.2
+  environment:
+    ES_URL: localhost:9200
+  commands:
+  - ./api.test.sh
+
+trigger:
+  event:
+  - push
+  - pull_request
+
+---
+kind: pipeline
+type: docker
+name: publish
+
+steps:
+  - name: test
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.2
+    environment:
+      ES_URL: localhost:9200
+    commands:
+    - ./api.test.sh
+
+  - name: gh-pages
+    image: plugins/gh-pages
+    environment:
+      PLUGIN_USER_NAME: Alexander Alexandrov
+      PLUGIN_USER_EMAIL: aalexandrovv@gmail.com
+    settings:
+      username: redneckz
+      password:
+        from_secret: github_password
+
+trigger:
+  event:
+    - tag
